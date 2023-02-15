@@ -46,22 +46,21 @@ async function run() {
     const reviewCollection = database.collection("reviews");
 
     // get all reviews
-    app.get("/reviews", async (req, res) => {
+    app.get("/reviews", async (_req, res) => {
       const cursor = reviewCollection.find({});
       const result = await cursor.toArray();
       res.send(result);
     });
 
-    // get single reviews
-    app.get("/reviews/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await reviewCollection.findOne(query);
+    // Post single reviews
+    app.post("/reviews", async (req, res) => {
+      const reviews = req?.body;
+      const result = await reviewCollection.insertOne(reviews);
       res.json(result);
     });
 
     // get all products
-    app.get("/products", async (req, res) => {
+    app.get("/products", async (_req, res) => {
       const cursor = ProductsCollection.find({});
       const result = await cursor.toArray();
       res.send(result);
@@ -172,6 +171,13 @@ async function run() {
       res.json(result);
     });
 
+    // get all user
+    app.get("/users", async (_req, res) => {
+      const cursor = usersCollection.find({});
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // varify admin for databasepoint
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
@@ -232,7 +238,7 @@ async function run() {
 
 run().catch(console.dir);
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.send("Welcome Honda show-room");
 });
 
